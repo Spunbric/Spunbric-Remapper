@@ -1,0 +1,31 @@
+# Gradle
+.gradle/
+build/
+out/
+classes/
+run/
+
+# Eclipse
+*.launch
+
+# IDEA
+*.iml
+*.ipr
+*.iws
+/.idea/
+.idea_modules/
+
+# VS Code
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# Exclude these artifacts due to legal issues. Bring your own lol
+*.tiny
+*.tsrg
+*.csv
+
+# We aren't distributing this because we aren't implementing it lol
+remapped/

@@ -1,0 +1,7 @@
+[submodule "MercuryMixin"]
+	path = MercuryMixin
+	url = https://github.com/CadixDev/MercuryMixin
+[submodule "SpongeCommon"]
+	path = SpongeCommon
+	url = https://github.com/SpongePowered/SpongeCommon
+	branch = api-8
