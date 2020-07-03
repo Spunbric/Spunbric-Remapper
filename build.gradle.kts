@@ -1,6 +1,9 @@
 plugins {
     java
+    id("net.minecrell.licenser") version "0.4.1"
 }
+
+apply(plugin = "net.minecrell.licenser")
 
 group = "me.i509"
 version = "1.0"
@@ -16,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":MercuryMixin"))
+    //implementation(project(":MercuryMixin"))
     implementation("org.cadixdev", "lorenz", "0.5.2")
     implementation("net.fabricmc:tiny-mappings-parser:0.3.0+build.17")
     implementation("net.fabricmc:lorenz-tiny:2.0.0+build.2")
@@ -24,4 +27,15 @@ dependencies {
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+license {
+    header = file("LICENSE.txt")
+
+    include("**.java")
+    newLine = true
+}
+
+task<RemapSpongeCommonTask>("remapCommon") {
+    this.group = "remapping"
 }

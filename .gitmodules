@@ -3,5 +3,5 @@
 	url = https://github.com/CadixDev/MercuryMixin
 [submodule "SpongeCommon"]
 	path = SpongeCommon
-	url = https://github.com/SpongePowered/SpongeCommon
-	branch = api-8
+	url = https://github.com/SpongePowered/SpongeCommon/
+	branch = api8
