@@ -39,12 +39,15 @@ public class RemapSpongeCommonTask extends AbstractMappingTask {
 				.map(File::toPath)
 				.collect(Collectors.toSet());
 
+		// TODO: Add API, Mixin, and all other common deps to classpath
+
 		this.getLogger().lifecycle(":Remapping SpongeCommon");
 
 		final Mercury mercury = new Mercury();
 
+		// Fails currently on:
+		// - BlockStateDirectionDataProvider
 		mercury.getProcessors().add(MercuryRemapper.create(mcpToYarn, false));
-		// mercury.getProcessors().add(MercuryRemapper.create(mcpToYarn, false));
 
 		// Add all minecraft dependencies to the classpath
 		mercury.getClassPath().addAll(minecraftAndDeps);
