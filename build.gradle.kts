@@ -1,6 +1,7 @@
 plugins {
     java
     id("net.minecrell.licenser") version "0.4.1"
+    //id("net.minecrell.gitpatcher") version "0.9.0" // Because we modify SpongeCommon build scripts for remapping
 }
 
 apply(plugin = "net.minecrell.licenser")
@@ -19,7 +20,6 @@ repositories {
 }
 
 dependencies {
-    //implementation(project(":MercuryMixin"))
     implementation("org.cadixdev", "lorenz", "0.5.2")
     implementation("net.fabricmc:tiny-mappings-parser:0.3.0+build.17")
     implementation("net.fabricmc:lorenz-tiny:2.0.0+build.2")
@@ -35,6 +35,10 @@ license {
     include("**.java")
     newLine = true
 }
+
+//patches {
+//
+//}
 
 task<RemapSpongeCommonTask>("remapCommon") {
     this.group = "remapping"
