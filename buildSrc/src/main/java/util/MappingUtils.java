@@ -40,9 +40,12 @@ import net.fabricmc.lorenztiny.TinyMappingsReader;
 import net.fabricmc.mapping.tree.TinyMappingFactory;
 import net.fabricmc.mapping.tree.TinyTree;
 import org.cadixdev.lorenz.MappingSet;
+import org.cadixdev.lorenz.io.srg.tsrg.TSrgReader;
 import org.cadixdev.lorenz.model.ClassMapping;
+import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.InnerClassMapping;
 import org.cadixdev.lorenz.model.TopLevelClassMapping;
+import org.cadixdev.lorenz.model.jar.FieldTypeProvider;
 
 public final class MappingUtils {
 	public static Map<String, String> readCsv(Scanner csv) {
@@ -86,17 +89,36 @@ public final class MappingUtils {
 		}
 	}
 
-	public static TinyMappingsReader readTiny(Path path, String from, String to) throws IOException {
-		final TinyTree tinyTree = TinyMappingFactory.loadWithDetection(new BufferedReader(new FileReader(path.toFile())));
+	public static MappingSet readTiny(Path path, String from, String to) throws IOException {
+		try (FileReader fileReader = new FileReader(path.toFile())) {
+			try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+				final TinyTree tinyTree = TinyMappingFactory.loadWithDetection(bufferedReader);
 
-		if (!tinyTree.getMetadata().getNamespaces().contains(from)) {
-			throw new RuntimeException(String.format("Could not find mapping namespace %s", from));
+				if (!tinyTree.getMetadata().getNamespaces().contains(from)) {
+					throw new RuntimeException(String.format("Could not find mapping namespace %s", from));
+				}
+
+				if (!tinyTree.getMetadata().getNamespaces().contains(to)) {
+					throw new RuntimeException(String.format("Could not find mapping namespace %s", to));
+				}
+
+				return new TinyMappingsReader(tinyTree, from, to).read();
+			}
 		}
+	}
 
-		if (!tinyTree.getMetadata().getNamespaces().contains(to)) {
-			throw new RuntimeException(String.format("Could not find mapping namespace %s", to));
+	public static MappingSet readTsrg(Path path) throws IOException {
+		try (final FileReader fileReader = new FileReader(path.toFile())) {
+			try (BufferedReader reader = new BufferedReader(fileReader)) {
+				return new TSrgReader(reader).read();
+			}
 		}
+	}
 
-		return new TinyMappingsReader(tinyTree, from, to);
+	public static FieldTypeProvider typeProviderFromMappings(MappingSet mappings) {
+		return fieldMapping -> mappings
+				.getClassMapping(fieldMapping.getParent().getFullObfuscatedName())
+				.flatMap(classMapping -> classMapping.getFieldMapping(fieldMapping.getObfuscatedName()))
+				.flatMap(FieldMapping::getType);
 	}
 }

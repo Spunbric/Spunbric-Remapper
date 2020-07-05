@@ -15,7 +15,7 @@ import org.gradle.api.Project;
 import util.MappingUtils;
 
 public abstract class AbstractMappingTask extends DefaultTask {
-	protected MappingSet generateMcpToYarnMappings() throws IOException {
+	protected MappingSet generateMcpToYarnMappings() throws Exception {
 		final Project project = this.getProject();
 		final Path dir = project.getProjectDir().toPath();
 
@@ -31,12 +31,12 @@ public abstract class AbstractMappingTask extends DefaultTask {
 		MappingUtils.failIfNotExisting(mcpFieldMappings);
 		MappingUtils.failIfNotExisting(mcpMethodMappings);
 
-		final TinyMappingsReader officialToIntermediaryReader = MappingUtils.readTiny(yarnMappings, "official", "intermediary");
-		final TinyMappingsReader intermediaryToNamedReader = MappingUtils.readTiny(yarnMappings, "intermediary", "named");
+		final MappingSet intermediaryToNamed = (MappingSet) MappingUtils.readTiny(yarnMappings, "intermediary", "named"); // intermediary -> named
+		final MappingSet officialToIntermediary = (MappingSet) MappingUtils.readTiny(yarnMappings, "official", "intermediary"); // obf -> intermediary
 
-		final MappingSet intermediaryToNamed = intermediaryToNamedReader.read(); // intermediary -> named
-		final MappingSet officialToIntermediary = officialToIntermediaryReader.read(); // obf -> intermediary
-		final MappingSet officialToSrg = new TSrgReader(new BufferedReader(new FileReader(srgMappings.toFile()))).read(); // obf -> srg
+		final MappingSet officialToSrg = MappingUtils.readTsrg(srgMappings); // obf -> srg
+
+		officialToSrg.addFieldTypeProvider(MappingUtils.typeProviderFromMappings(officialToIntermediary));
 
 		final MappingSet srgToIntermediary = officialToSrg.reverse().merge(officialToIntermediary); // srg -> intermediary
 
