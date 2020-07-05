@@ -8,6 +8,7 @@ import org.cadixdev.lorenz.MappingSet;
 import org.cadixdev.mercury.Mercury;
 import org.cadixdev.mercury.remapper.MercuryRemapper;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.TaskAction;
 import util.MappingUtils;
 
@@ -40,6 +41,23 @@ public class RemapSpongeCommonTask extends AbstractMappingTask {
 				.collect(Collectors.toSet());
 
 		// TODO: Add API, Mixin, and all other common deps to classpath
+		final Set<Path> files = spongeCommon.getConfigurations()
+				.getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME)
+				.getFiles()
+				.stream()
+				.map(File::toPath)
+				.collect(Collectors.toSet());
+
+		// Exclude the build artifacts
+		files.removeIf(path -> path.startsWith(spongeCommonPath.resolve("build").resolve("classes")));
+		files.removeIf(path -> path.startsWith(spongeCommonPath.resolve("build").resolve("resources")));
+
+		for (Path file : files) {
+			System.out.println(file);
+		}
+
+		// Remove Sponge artifacts
+		files.removeIf(path -> path.startsWith(spongeCommonPath));
 
 		this.getLogger().lifecycle(":Remapping SpongeCommon");
 
@@ -50,6 +68,7 @@ public class RemapSpongeCommonTask extends AbstractMappingTask {
 		mercury.getProcessors().add(MercuryRemapper.create(mcpToYarn, false));
 
 		// Add all minecraft dependencies to the classpath
+		mercury.getClassPath().addAll(files);
 		mercury.getClassPath().addAll(minecraftAndDeps);
 
 		// We *may* need this, try to remove reliance on it
