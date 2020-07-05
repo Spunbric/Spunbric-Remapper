@@ -18,7 +18,7 @@ public class RemapSpongeCommonTask extends AbstractMappingTask {
 		final Project project = this.getProject();
 		final Path dir = project.getProjectDir().toPath();
 		final Path destination = dir.resolve("remapped").resolve("SpongeCommon");
-		final Path spongeCommonPath = dir.resolve("SpongeCommon");
+		final Path spongeCommonPath = dir.resolve("PatchedSpongeCommon");
 
 		if (Files.notExists(destination)) {
 			Files.createDirectories(destination);

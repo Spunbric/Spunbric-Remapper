@@ -1,7 +1,7 @@
 plugins {
     java
     id("net.minecrell.licenser") version "0.4.1"
-    //id("net.minecrell.gitpatcher") version "0.9.0" // Because we modify SpongeCommon build scripts for remapping
+    id("net.minecrell.gitpatcher") version "0.9.0" // Because we modify SpongeCommon build scripts for remapping
 }
 
 apply(plugin = "net.minecrell.licenser")
@@ -36,9 +36,11 @@ license {
     newLine = true
 }
 
-//patches {
-//
-//}
+patches {
+    submodule = "upstream"
+    target = file("PatchedSpongeCommon")
+    patches = file("patches")
+}
 
 task<RemapSpongeCommonTask>("remapCommon") {
     this.group = "remapping"

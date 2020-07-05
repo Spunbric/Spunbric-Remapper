@@ -2,8 +2,9 @@ buildscript {
     repositories {
         maven("https://files.minecraftforge.net/maven")
     }
+
     dependencies {
-        classpath("org.cadixdev", "mercury", "0.1.0-SNAPSHOT")
+        //classpath("org.cadixdev", "mercury", "0.1.0-SNAPSHOT")
         classpath(group = "net.minecraftforge.gradle", name = "ForgeGradle", version = "3.+")
     }
 }
@@ -38,3 +39,6 @@ dependencies {
 
 dependencies {
 }
+
+// yeah no.
+task("updateSubmodules").enabled = false
