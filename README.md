@@ -14,6 +14,10 @@ To clone submodules in an already cloned repository:
 
 ```git submodule update --init --recursive```
 
+Once cloned, make sure you use the following to setup SpongeCommon for remapping:
+
+```gradle applyPatches```
+
 ## Setup
 
 Some setup is required since we do not distribute the mappings in this repo.
