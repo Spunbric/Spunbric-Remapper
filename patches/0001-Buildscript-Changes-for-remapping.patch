@@ -1,4 +1,4 @@
-From 2e32e7a024febc9ddeb0c00117133feaca0d06a3 Mon Sep 17 00:00:00 2001
+From 8edbc6382e7069c06a61634979d5e614c15dceea Mon Sep 17 00:00:00 2001
 From: i509VCB <git@i509.me>
 Date: Sat, 4 Jul 2020 19:55:33 -0500
 Subject: [PATCH] Buildscript Changes for remapping
@@ -6,7 +6,7 @@ Subject: [PATCH] Buildscript Changes for remapping
 This is needed since gradle does all kinds of funky stuff which makes SC impossible to be hooked up to our remapper. This includes disabling vanilla, which we don't even use.
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 22ae7e5d7..cfd2b9cbf 100644
+index 1fd5765fa..d821578e9 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -18,7 +18,7 @@ plugins {
@@ -27,16 +27,16 @@ index 22ae7e5d7..cfd2b9cbf 100644
              }
  }
  
-@@ -179,7 +179,7 @@ dependencies {
-     runtime("org.apache.logging.log4j:log4j-slf4j-impl:2.8.1")
+@@ -117,7 +117,7 @@ dependencies {
+     minecraft("net.minecraft:$minecraftDep:$minecraftVersion")
  
      // api
 -    api(project(":SpongeAPI"))
 +    api(project("SpongeAPI"))
      api("org.spongepowered:plugin-spi:0.1.1-SNAPSHOT")
-     api("org.spongepowered:plugin-meta:0.6.0-SNAPSHOT")
  
-@@ -194,7 +194,7 @@ dependencies {
+     // Database stuffs... likely needs to be looked at
+@@ -132,7 +132,7 @@ dependencies {
      implementation("org.ow2.asm:asm-tree:6.2")
  
      // Launch Dependencies - Needed to bootstrap the engine(s)
@@ -45,7 +45,7 @@ index 22ae7e5d7..cfd2b9cbf 100644
      launchConfig("org.spongepowered:plugin-spi:0.1.1-SNAPSHOT")
      launchConfig("org.spongepowered:mixin:0.8")
      launchConfig("org.checkerframework:checker-qual:2.8.1")
-@@ -228,10 +228,10 @@ dependencies {
+@@ -162,10 +162,10 @@ dependencies {
      mixinsConfig(sourceSets["main"].output)
      add(accessors.get().implementationConfigurationName, accessorsConfig)
      add(mixins.get().implementationConfigurationName, mixinsConfig)
@@ -58,7 +58,7 @@ index 22ae7e5d7..cfd2b9cbf 100644
      add(invalid.get().implementationConfigurationName, mixinsConfig)
  }
  
-@@ -323,6 +323,7 @@ allprojects {
+@@ -292,6 +292,7 @@ if (testplugins != null) {
      }
  }
  
@@ -66,7 +66,7 @@ index 22ae7e5d7..cfd2b9cbf 100644
  project("SpongeVanilla") {
      val vanillaProject = this
      apply {
-@@ -597,8 +598,10 @@ project("SpongeVanilla") {
+@@ -466,8 +467,10 @@ project("SpongeVanilla") {
              this["url"] = projectUrl
          }
          header = apiProject.file("HEADER.txt")
@@ -80,7 +80,7 @@ index 22ae7e5d7..cfd2b9cbf 100644
  }
 +*/
 diff --git a/settings.gradle.kts b/settings.gradle.kts
-index b7f20763d..24fc02586 100644
+index 528308be0..98cb46d10 100644
 --- a/settings.gradle.kts
 +++ b/settings.gradle.kts
 @@ -2,7 +2,7 @@ rootProject.name = "SpongeCommon"
@@ -92,13 +92,6 @@ index b7f20763d..24fc02586 100644
  pluginManagement {
      repositories {
          mavenLocal()
-@@ -13,4 +13,4 @@ pluginManagement {
-         gradlePluginPortal()
-     }
- 
--}
-\ No newline at end of file
-+}
 -- 
 2.25.1.windows.1
 

@@ -1,0 +1,36 @@
+From 3f68b02011145d18e09218e3ee65dc4879db94fb Mon Sep 17 00:00:00 2001
+From: i509VCB <git@i509.me>
+Date: Fri, 10 Jul 2020 14:32:30 -0500
+Subject: [PATCH] Patch BlockStateDirectionDataProvider so mercury can remap
+ it.
+
+Mercury will fail on "net.minecraft.util.@Nullable Direction" so we remove any precense of those annotations so mercury remaps properly.
+
+diff --git a/src/main/java/org/spongepowered/common/data/provider/BlockStateDirectionDataProvider.java b/src/main/java/org/spongepowered/common/data/provider/BlockStateDirectionDataProvider.java
+index 85420e580..16c228812 100644
+--- a/src/main/java/org/spongepowered/common/data/provider/BlockStateDirectionDataProvider.java
++++ b/src/main/java/org/spongepowered/common/data/provider/BlockStateDirectionDataProvider.java
+@@ -50,16 +50,18 @@ public BlockStateDirectionDataProvider(Class<? extends Block> blockType, Directi
+         return Optional.of(getFor(direction));
+     }
+ 
++    @SuppressWarnings("ConstantConditions") // Nullable, Will make mercury fail to remap
+     @Override
+     protected Optional<BlockState> set(BlockState dataHolder, Direction value) {
+-        final net.minecraft.util.@Nullable Direction direction = getFor(value);
++        final net.minecraft.util.Direction direction = getFor(value);
+         if (direction == null || !this.property.getAllowedValues().contains(direction)) {
+             return Optional.of(dataHolder);
+         }
+         return Optional.of(dataHolder.with(this.property, direction));
+     }
+ 
+-    private static net.minecraft.util.@Nullable Direction getFor(final Direction direction) {
++    // @Nullable - Will make mercury fail to remap
++    private static net.minecraft.util.Direction getFor(final Direction direction) {
+         checkNotNull(direction);
+         switch (direction) {
+             case UP:
+-- 
+2.25.1.windows.1
+
