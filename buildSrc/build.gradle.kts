@@ -29,8 +29,8 @@ repositories {
 }
 
 dependencies {
-    //implementation(project(":MercuryMixin")) // TODO: Maven local
-    implementation("org.cadixdev:lorenz:0.5.2")
+    implementation("org.cadixdev:lorenz:0.5.3")
+    implementation("org.cadixdev:lorenz-asm:0.5.3")
     implementation("org.cadixdev:mercury:0.1.0-SNAPSHOT")
     implementation("org.cadixdev:mercurymixin:0.1.0-SNAPSHOT")
     implementation("net.fabricmc:tiny-mappings-parser:0.3.0+build.17")

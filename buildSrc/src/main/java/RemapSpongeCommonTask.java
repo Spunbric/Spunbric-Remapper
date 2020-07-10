@@ -63,8 +63,6 @@ public class RemapSpongeCommonTask extends AbstractMappingTask {
 
 		final Mercury mercury = new Mercury();
 
-		// Fails currently on:
-		// - BlockStateDirectionDataProvider
 		mercury.getProcessors().add(MercuryRemapper.create(mcpToYarn, false));
 
 		// Add all minecraft dependencies to the classpath
@@ -72,6 +70,7 @@ public class RemapSpongeCommonTask extends AbstractMappingTask {
 		mercury.getClassPath().addAll(minecraftAndDeps);
 
 		// We *may* need this, try to remove reliance on it
+		// TODO: Put Mixin on classpath
 		mercury.setGracefulClasspathChecks(true);
 
 		// We need to rewrite in the following order:

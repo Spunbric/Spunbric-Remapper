@@ -1,13 +1,8 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Scanner;
 
-import net.fabricmc.lorenztiny.TinyMappingsReader;
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.io.srg.tsrg.TSrgReader;
 import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.MethodMapping;
 import org.gradle.api.DefaultTask;
@@ -31,8 +26,8 @@ public abstract class AbstractMappingTask extends DefaultTask {
 		MappingUtils.failIfNotExisting(mcpFieldMappings);
 		MappingUtils.failIfNotExisting(mcpMethodMappings);
 
-		final MappingSet intermediaryToNamed = (MappingSet) MappingUtils.readTiny(yarnMappings, "intermediary", "named"); // intermediary -> named
-		final MappingSet officialToIntermediary = (MappingSet) MappingUtils.readTiny(yarnMappings, "official", "intermediary"); // obf -> intermediary
+		final MappingSet intermediaryToNamed = MappingUtils.readTiny(yarnMappings, "intermediary", "named"); // intermediary -> named
+		final MappingSet officialToIntermediary = MappingUtils.readTiny(yarnMappings, "official", "intermediary"); // obf -> intermediary
 
 		final MappingSet officialToSrg = MappingUtils.readTsrg(srgMappings); // obf -> srg
 
@@ -64,5 +59,32 @@ public abstract class AbstractMappingTask extends DefaultTask {
 		this.getLogger().lifecycle(":Generated MCP -> Yarn Mappings");
 
 		return mcpToYarn;
+	}
+
+	protected MappingSet generateSrgToMcp(Path srg, Path fields, Path methods) throws Exception {
+		final MappingSet officialToSrg = MappingUtils.readTsrg(srg);
+
+		final MappingSet srgToSrg = officialToSrg
+				.copy()
+				.reverse() // srg -> official
+				.merge(officialToSrg); // srg -> (official -> official) -> srg
+
+		// Scanners are closed by readCsv
+		final Map<String, String> mcpFields = MappingUtils.readCsv(new Scanner(fields));
+		final Map<String, String> mcpMethods = MappingUtils.readCsv(new Scanner(methods));
+
+		MappingUtils.iterateClasses(srgToSrg, classMapping -> {
+			for (FieldMapping fieldMapping : classMapping.getFieldMappings()) {
+				final String deobfuscatedName = fieldMapping.getDeobfuscatedName();
+				fieldMapping.setDeobfuscatedName(mcpFields.getOrDefault(deobfuscatedName, deobfuscatedName));
+			}
+
+			for (MethodMapping methodMapping : classMapping.getMethodMappings()) {
+				final String deobfuscatedName = methodMapping.getDeobfuscatedName();
+				methodMapping.setDeobfuscatedName(mcpMethods.getOrDefault(deobfuscatedName, deobfuscatedName));
+			}
+		});
+
+		return srgToSrg; // This is now SRG -> MCP
 	}
 }
