@@ -1,3 +1,5 @@
+import org.cadixdev.lorenz.io.MappingFormats
+
 plugins {
     java
     id("net.minecrell.licenser") version "0.4.1"
@@ -58,6 +60,7 @@ task<RemapSpongeCommonTask>("remapCommon") {
     this.group = "remapping"
 }
 
-task<GenerateMappingTask>("generateMappings") {
-    this.group = "remapping"
+task<GenerateSrgToIntermediaryTask>("generateSrgToIntermediary") {
+    this.format = MappingFormats.TSRG
+    this.outputName = "srgToIntermediary.tsrg"
 }

@@ -26,6 +26,7 @@ bin/
 *.tiny
 *.tsrg
 *.csv
+*.jar
 
 # We aren't distributing this because we aren't implementing it lol
 remapped/

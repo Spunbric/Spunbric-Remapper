@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-package util;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -83,10 +81,12 @@ public final class MappingUtils {
 		}
 	}
 
-	public static void failIfNotExisting(Path path) throws FileNotFoundException {
+	public static Path validateFile(Path path) throws FileNotFoundException {
 		if (Files.notExists(path)) {
 			throw new FileNotFoundException(String.format("File at %s does not exist", path));
 		}
+
+		return path;
 	}
 
 	public static MappingSet readTiny(Path path, String from, String to) throws IOException {
@@ -108,10 +108,8 @@ public final class MappingUtils {
 	}
 
 	public static MappingSet readTsrg(Path path) throws IOException {
-		try (final FileReader fileReader = new FileReader(path.toFile())) {
-			try (BufferedReader reader = new BufferedReader(fileReader)) {
-				return new TSrgReader(reader).read();
-			}
+		try (BufferedReader reader = Files.newBufferedReader(path)) {
+			return new TSrgReader(reader).read();
 		}
 	}
 
