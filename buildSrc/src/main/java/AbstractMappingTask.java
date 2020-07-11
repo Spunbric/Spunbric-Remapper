@@ -86,12 +86,10 @@ public abstract class AbstractMappingTask extends DefaultTask {
 			providers.add(new JarFileClassProvider(clientJarFile));
 
 			cascadingInheritanceProvider.install(new ClassProviderInheritanceProvider(klass -> {
-				System.out.println(klass);
 				for (ClassProvider provider : providers) {
 					final byte[] bytes = provider.get(klass);
 
 					if (bytes != null) {
-						System.out.println("found " + klass);
 						return bytes;
 					}
 				}
@@ -104,7 +102,7 @@ public abstract class AbstractMappingTask extends DefaultTask {
 
 			// Install all dependencies - this is needed to make sure everything goes well
 			final Project spongeCommon = this.getProject().findProject(":SpongeCommon");
-			final Set<Path> files = spongeCommon.getConfigurations()
+			/*final Set<Path> files = spongeCommon.getConfigurations()
 					.getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME)
 					.getFiles()
 					.stream()
@@ -113,14 +111,19 @@ public abstract class AbstractMappingTask extends DefaultTask {
 
 			for (Path file : files) {
 				if (Files.isRegularFile(file)) {
+					if (file.endsWith("server-1.14.4_mapped_snapshot_20200119-1.14.3-recomp.jar")) {
+						continue;
+					}
+
 					providers.add(new JarFileClassProvider(new JarFile(file.toFile())));
 				}
-			}
+			}*/
 
 			final InheritanceProvider provider = new CachingInheritanceProvider(cascadingInheritanceProvider);
 
 			// Complete the mappings
 			MappingUtils.iterateClasses(officialToIntermediary, classMapping -> classMapping.complete(provider));
+			MappingUtils.iterateClasses(officialToSrg, classMapping -> classMapping.complete(provider));
 
 			// SRGs do not have field signatures, get them from tiny mappings
 			officialToSrg.addFieldTypeProvider(MappingUtils.typeProviderFromMappings(officialToIntermediary));
