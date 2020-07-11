@@ -40,6 +40,11 @@ Go to MCPConfig repository and grab the `joined.tsrg` file for the corresponding
 
 Find the `fields.csv` and `methods.csv` files that map `srg -> mcp`. Place them in the `mappings/mcp` folder.
 
+### 4. Get the 1.14.4 Client jar
+
+You can get the client jar on the [wiki](https://minecraft.gamepedia.com/Java_Edition_1.14.4).
+Place it in the `mappings` folder.
+
 </details>
 
 ## Licensing
