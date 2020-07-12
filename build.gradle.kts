@@ -1,4 +1,11 @@
 import org.cadixdev.lorenz.io.MappingFormats
+import org.cadixdev.lorenz.io.MappingsReader
+import org.cadixdev.lorenz.io.MappingsWriter
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.Reader
+import java.io.Writer
+import java.util.Optional
 
 plugins {
     java
@@ -63,4 +70,28 @@ task<RemapSpongeCommonTask>("remapCommon") {
 task<GenerateSrgToIntermediaryTask>("generateSrgToIntermediary") {
     this.format = MappingFormats.TSRG
     this.outputName = "srgToIntermediary.tsrg"
+}
+
+task<GenerateSrgToIntermediaryTask>("generateTinySrgToIntermediary") {
+    this.format = WritableTinyFormat
+    this.outputName = "srgToIntermediary.tiny"
+}
+
+task<GenerateIntermediaryToMcpMappingsTask>("generateIntermediaryToMcp") {
+    this.format = WritableTinyFormat
+    this.outputName = "intermediaryToMcp.tiny"
+}
+
+object WritableTinyFormat : org.cadixdev.lorenz.io.TextMappingFormat {
+    override fun createWriter(writer: Writer?): MappingsWriter {
+        return TinyV2MappingsWriter(writer, "named", "intermediary")
+    }
+
+    override fun getStandardFileExtension(): Optional<String> {
+        return Optional.of(".tiny")
+    }
+
+    override fun createReader(reader: Reader?): MappingsReader {
+        throw UnsupportedOperationException("Use normal tiny reader")
+    }
 }
