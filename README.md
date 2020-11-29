@@ -1,5 +1,7 @@
 # Spunbric Remapper
 
+# Defunct: Replaced in favor of https://github.com/Spunbric/spunbric-mappings for MCP in dev
+
 A set of tools used to remap SpongeCommon to yarn mappings for use in Spunbric.
 
 ## Cloning the repository
